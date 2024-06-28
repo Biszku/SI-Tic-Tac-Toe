@@ -1,13 +1,8 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class TicTacToeBoard {
 
     private char[][] board;
-
-    public char[][] getBoard() {
-        return board;
-    }
 
     public TicTacToeBoard() {
         board = new char[3][3];
@@ -18,7 +13,11 @@ public class TicTacToeBoard {
         }
     }
 
-    public void makeMove(int row, int col, char player) {
+    public char[][] getBoard() {
+        return board;
+    }
+
+    public void makeMove(int row, int col, char player,char[][] board) {
         board[row][col] = player;
     }
 
@@ -29,42 +28,28 @@ public class TicTacToeBoard {
                 System.out.println("---------");
             }
         }
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
-    public void enterMove(char player) {
+    public void enterMove(char player,char[][] board) {
         Scanner scanner = new Scanner(System.in);
-        int row = 100;
-        int col = 100;
+        int row ;
+        int col;
 
         try {
             do {
-                String[] input = scanner.nextLine().split(" ");
+                String[] input = scanner.nextLine().trim().split(" ");
                 row = Integer.parseInt(input[0]) - 1;
                 col = Integer.parseInt(input[1]) - 1;
-                System.out.println(row + " " + col);
             } while (board[row][col] != ' ');
         } catch (Exception e) {
-            enterMove(player);
+            enterMove(player,board);
             return;
         }
 
-        makeMove(row, col, player);
-    }
-
-    public boolean checkWinner(char player, char[][] board) {
-        char[] win = new char[] {player, player, player};
-
-        // horizontal checking
-        for(char[] tab : board) {
-            if(Arrays.equals(tab,win)) return true;
-        }
-
-        // vertical checking
-        for(int i = 0; i < board.length; i++) {
-            char[] newArr = new char[] {board[0][i],board[1][i],board[2][i]};
-            if(Arrays.equals(newArr,win)) return true;
-        }
-
-        return false;
+        makeMove(row, col, player, board);
     }
 }
