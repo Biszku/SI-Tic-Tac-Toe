@@ -1,49 +1,37 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BoardController extends TicTacToeBoard {
 
-    private ArrayList<TicTacToeBoard> allBoards;
-    private ArrayList<TicTacToeBoard> matchingBoards;
+    private ArrayList<char[][]> allBoards;
 
     public BoardController() {
         super();
         allBoards = new ArrayList<>();
-        matchingBoards = new ArrayList<>();
+        char[][]board = new char[3][3];
+        for(char[] row : board) Arrays.fill(row, ' ');
+        generateAllPossibleBoards(board, 'x');
     }
 
-    public ArrayList<TicTacToeBoard> getAllBoard() {
-        generateAllPossibleBoards();
+    public ArrayList<char[][]> getAllBoard() {
         return allBoards;
     }
 
-    public void generateAllPossibleBoards() {
+    public void generateAllPossibleBoards(char[][] board, char currentPlayer) {
+        if (isFull(board) || checkWinner('x', board) || checkWinner('o', board)) {
+            System.out.println(Arrays.deepToString(board));
+            allBoards.add(board);
+            return;
+        }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                TicTacToeBoard newArr = new TicTacToeBoard();
-                char activePlayer = 'x';
-                makeMove(i, j, activePlayer, newArr.getBoard());
-                activePlayer = changePlayer(activePlayer);
-                makePossibleMove(activePlayer, newArr, true);
+                if (board[i][j] == ' ') {
+                    board[i][j] = currentPlayer;
+                    generateAllPossibleBoards(board, currentPlayer == 'x' ? 'o' : 'x');
+                    board[i][j] = ' ';
+                }
             }
         }
-    }
-
-    public char changePlayer(char activePlayer) {
-        return activePlayer == 'x' ? 'o' : 'x';
-    }
-
-    public void makePossibleMove(char currentPlayers,TicTacToeBoard newArr, boolean isLast) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                makeMove(i, j, currentPlayers, newArr.getBoard());
-                if (isLast) allBoards.add(newArr);
-            }
-        }
-    }
-
-    @Override
-    public void makeMove(int row, int col, char player, char[][] board) {
-        if(board[row][col] == ' ') super.makeMove(row, col, player, board);
     }
 }
