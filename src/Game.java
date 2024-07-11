@@ -1,30 +1,32 @@
 import java.util.Random;
 
 public class Game {
-    private char realPlayer;
+    private final char realPlayer;
+    private final char siPlayer;
     private char currentPlayer;
-    private BoardController boardState;
+    private Board boardState;
 
     public Game() {
-        Random random = new Random();
-        realPlayer = random.nextInt(1,3) == 1 ? 'x' : 'o';
         currentPlayer = 'x';
-        boardState = new BoardController();
+        Random random = new Random();
+        realPlayer = random.nextInt(1,3) == 1 ? currentPlayer : 'o';
+        siPlayer = realPlayer == currentPlayer ? 'o' : currentPlayer;
+        boardState = new Board();
         boardState.displayBoardState();
     }
 
     public void start() {
-        while(true) {
+        while (true) {
             boardState.enterMove(currentPlayer, boardState.getBoardState());
             boolean winner = isWinner();
-            if(winner) {
+            if (winner) {
                 System.out.println("Player " + currentPlayer + " won");
                 return;
-            };
-            if(boardState.isFull(getBoard())) {
+            }
+            if (boardState.isFull(getBoard())) {
                 System.out.println("This is draw");
                 return;
-            };
+            }
             changePlayer();
         }
     }
