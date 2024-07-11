@@ -1,28 +1,26 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class TicTacToeBoard {
+public class Board {
+    private char[][] boardState;
 
-    private char[][] board;
-
-    public TicTacToeBoard() {
-        board = new char[3][3];
-        for(char[] row : board) {
-            Arrays.fill(row, ' ');
-        }
+    public Board() {
+        boardState = new char[3][3];
+        makeBoardEmpty(boardState);
     }
 
-    public char[][] getBoard() {
-        return board;
+    public char[][] getBoardState() {
+        return boardState;
     }
 
     public void makeMove(int row, int col, char player,char[][] board) {
         board[row][col] = player;
+        displayBoardState();
     }
 
-    public void displayCurrentBoard() {
+    public void displayBoardState() {
         for (int i = 0; i < 3; i++) {
-            System.out.println(board[i][0] + " | " + board[i][1] + " | " + board[i][2]);
+            System.out.println(boardState[i][0] + " | " + boardState[i][1] + " | " + boardState[i][2]);
             if (i < 2) {
                 System.out.println("---------");
             }
@@ -33,20 +31,19 @@ public class TicTacToeBoard {
 
     public void enterMove(char player,char[][] board) {
         Scanner scanner = new Scanner(System.in);
-        int row ;
+        int row;
         int col;
-
         try {
             do {
                 String[] input = scanner.nextLine().trim().split(" ");
                 row = Integer.parseInt(input[0]) - 1;
                 col = Integer.parseInt(input[1]) - 1;
+                if(board[row][col] != ' ') displayBoardState();
             } while (board[row][col] != ' ');
         } catch (Exception e) {
             enterMove(player,board);
             return;
         }
-
         makeMove(row, col, player, board);
     }
 
@@ -61,7 +58,7 @@ public class TicTacToeBoard {
         return true;
     }
 
-    public boolean checkWinner(char player, char[][] board) {
+    public boolean isWinner(char player, char[][] board) {
         char[] win = new char[] {player, player, player};
 
         // horizontal checking
@@ -75,11 +72,17 @@ public class TicTacToeBoard {
             if(Arrays.equals(newArr,win)) return true;
         }
 
-        // cross checking
+        // cross-checking
         char[] cross1 = new char[] {board[0][0],board[1][1],board[2][2]};
         char[] cross2 = new char[] {board[0][2],board[1][1],board[2][0]};
         if(Arrays.equals(cross1,win) || Arrays.equals(cross2,win)) return true;
 
         return false;
+    }
+
+    private void makeBoardEmpty(char[][] board) {
+        for(char[] row : board) {
+            Arrays.fill(row, ' ');
+        }
     }
 }
