@@ -41,6 +41,7 @@ public class Board {
                 if(board[row][col] != ' ') displayBoardState();
             } while (board[row][col] != ' ');
         } catch (Exception e) {
+            displayBoardState();
             enterMove(player,board);
             return;
         }
