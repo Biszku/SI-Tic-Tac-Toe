@@ -21,17 +21,12 @@ public class Game {
 
     public void start() {
         boardState.displayBoardState();
-
         while (true) {
-            System.out.println(siController.getWinnerBoards().size());
-            System.out.println(siController.getDrawBoards().size());
-
             if(currentPlayer == realPlayer){
                 boardState.enterMove(currentPlayer, getBoard());
             }
             else {
-                System.out.println("Computer move");
-                boardState.enterMove(currentPlayer, getBoard());
+                siController.makeMove(currentPlayer,getBoard());
             }
 
             boolean winner = isWinner();

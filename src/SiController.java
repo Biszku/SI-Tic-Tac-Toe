@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class SiController {
     private List<char[][]> winnerBoards;
@@ -73,5 +74,36 @@ public class SiController {
                 copy.add(innerBoard);
         }
         return copy;
-    };
+    }
+
+    public void makeMove(char currentPlayer,char[][] board){
+        if(winnerBoards.isEmpty())
+            findBestMove(currentPlayer, board, drawBoards.get(0));
+        else
+            findBestMove(currentPlayer, board, winnerBoards.get(0));
+    }
+
+    public void findBestMove(char currentPlayer, char[][] board, char[][] bestBoard) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (currentPlayer == bestBoard[i][j] && board[i][j] == ' ') {
+                    board[i][j] = currentPlayer;
+                    System.out.println((i + 1) + " " + (j + 1));
+                    displayBoardState(board);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void displayBoardState(char[][] boardState) {
+        for (int i = 0; i < 3; i++) {
+            System.out.println(boardState[i][0] + " | " + boardState[i][1] + " | " + boardState[i][2]);
+            if (i < 2) {
+                System.out.println("---------");
+            }
+        }
+
+        System.out.println();
+    }
 }
