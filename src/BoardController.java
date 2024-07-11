@@ -1,35 +1,34 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-public class BoardController extends TicTacToeBoard {
-
-    private ArrayList<char[][]> allBoards;
+public class BoardController extends Board {
+    private List<Board> allBoards;
 
     public BoardController() {
         super();
         allBoards = new ArrayList<>();
-        char[][]board = new char[3][3];
-        for(char[] row : board) Arrays.fill(row, ' ');
+        Board board = new Board();
         generateAllPossibleBoards(board, 'x');
     }
 
-    public ArrayList<char[][]> getAllBoard() {
+    public List<Board> getAllBoard() {
         return allBoards;
     }
 
-    public void generateAllPossibleBoards(char[][] board, char currentPlayer) {
-        if (isFull(board) || checkWinner('x', board) || checkWinner('o', board)) {
-            System.out.println(Arrays.deepToString(board));
+    public void generateAllPossibleBoards(Board board, char currentPlayer) {
+        if (isFull(board.getBoardState()) ||
+                isWinner('x', board.getBoardState()) ||
+                isWinner('o', board.getBoardState())) {
             allBoards.add(board);
             return;
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board[i][j] == ' ') {
-                    board[i][j] = currentPlayer;
+                if (board.getBoardState()[i][j] == ' ') {
+                    board.getBoardState()[i][j] = currentPlayer;
                     generateAllPossibleBoards(board, currentPlayer == 'x' ? 'o' : 'x');
-                    board[i][j] = ' ';
+                    board.getBoardState()[i][j] = ' ';
                 }
             }
         }
