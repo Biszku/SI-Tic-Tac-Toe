@@ -22,6 +22,10 @@ public class SiController {
     }
 
     public void generateBoards(Board board, char player, char currentPlayer) {
+        char reversePlayer = player == 'x' ? 'o' : 'x';
+        if(board.isWinner(reversePlayer, board.getBoardState())){
+            return;
+        }
         if (board.isWinner(player, board.getBoardState())) {
             winnerBoards.add(copyArray(board.getBoardState()));
             return;

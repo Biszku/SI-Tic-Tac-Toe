@@ -1,4 +1,6 @@
+import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Game {
     private final char realPlayer;
@@ -22,6 +24,8 @@ public class Game {
     public void start() {
         boardState.displayBoardState();
         while (true) {
+            System.out.println(Arrays.deepToString(siController.getWinnerBoards().get(0)));
+//            System.out.println(siController.getDrawBoards().size());
             if(currentPlayer == realPlayer){
                 boardState.enterMove(currentPlayer, getBoard());
             }
