@@ -15,10 +15,10 @@ public class Board {
 
     public void makeMove(int row, int col, char player,char[][] board) {
         board[row][col] = player;
-        displayBoardState();
+        printBoard();
     }
 
-    public void displayBoardState() {
+    public void printBoard() {
         for (int i = 0; i < 3; i++) {
             System.out.println(boardState[i][0] + " | " + boardState[i][1] + " | " + boardState[i][2]);
             if (i < 2) {
@@ -38,10 +38,10 @@ public class Board {
                 String[] input = scanner.nextLine().trim().split(" ");
                 row = Integer.parseInt(input[0]) - 1;
                 col = Integer.parseInt(input[1]) - 1;
-                if(board[row][col] != ' ') displayBoardState();
+                if(board[row][col] != ' ') printBoard();
             } while (board[row][col] != ' ');
         } catch (Exception e) {
-            displayBoardState();
+            printBoard();
             enterMove(player,board);
             return;
         }
@@ -73,7 +73,7 @@ public class Board {
             if(Arrays.equals(newArr,win)) return true;
         }
 
-        // cross-checking
+        // diagonal checking
         char[] cross1 = new char[] {board[0][0],board[1][1],board[2][2]};
         char[] cross2 = new char[] {board[0][2],board[1][1],board[2][0]};
         if(Arrays.equals(cross1,win) || Arrays.equals(cross2,win)) return true;

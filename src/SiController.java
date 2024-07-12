@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class SiController {
     private List<char[][]> winnerBoards;
@@ -26,13 +25,13 @@ public class SiController {
         if(board.isWinner(reversePlayer, board.getBoardState())){
             return;
         }
-        if (board.isWinner(player, board.getBoardState())) {
+        if (board.isWinner(player, board.getBoardState()) &&
+                !winnerBoards.contains(board.getBoardState())) {
             winnerBoards.add(copyArray(board.getBoardState()));
             return;
         }
         if(board.isFull(board.getBoardState()) &&
-                !board.isWinner('x', board.getBoardState()) &&
-                !board.isWinner('x', board.getBoardState())){
+                !drawBoards.contains(board.getBoardState())){
             drawBoards.add(copyArray(board.getBoardState()));
             return;
         }
