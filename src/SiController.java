@@ -1,112 +1,58 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public class SiController extends Board {
 
-public class SiController {
-    private List<char[][]> winnerBoards;
-    private List<char[][]> drawBoards;
-
-    public SiController(char siPlayer) {
-        winnerBoards = new ArrayList<>();
-        drawBoards = new ArrayList<>();
-        generateBoards(new Board(), siPlayer, 'x');
+    public SiController(char currentPlayer) {
+        super(currentPlayer);
     }
 
-    public List<char[][]> getWinnerBoards() {
-        return winnerBoards;
-    }
-
-    public List<char[][]> getDrawBoards() {
-        return drawBoards;
-    }
-
-    public void generateBoards(Board board, char player, char currentPlayer) {
-        char reversePlayer = player == 'x' ? 'o' : 'x';
-        if(board.isWinner(reversePlayer, board.getBoardState())){
-            return;
-        }
-        if (board.isWinner(player, board.getBoardState()) &&
-                !winnerBoards.contains(board.getBoardState())) {
-            winnerBoards.add(copyArray(board.getBoardState()));
-            return;
-        }
-        if(board.isFull(board.getBoardState()) &&
-                !drawBoards.contains(board.getBoardState())){
-            drawBoards.add(copyArray(board.getBoardState()));
-            return;
-        }
+    public int[] bestMove() {
+        int bestScore = Integer.MIN_VALUE;
+        int[] move = new int[2];
+        char[][] board = getBoardState();
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board.getBoardState()[i][j] == ' ') {
-                    board.getBoardState()[i][j] = currentPlayer;
-                    generateBoards(board, player, currentPlayer == 'x' ? 'o' : 'x');
-                    board.getBoardState()[i][j] = ' ';
-                }
-            }
-        }
-    }
-
-    public char[][] copyArray(char[][] board){
-        char[][] copy = new char[3][3];
-        for (int i = 0; i < 3; i++) {
-            copy[i] = Arrays.copyOf(board[i], board[i].length);
-        }
-        return copy;
-    }
-
-    public void reduceBoards(char[][] board){
-        winnerBoards = reduceBoard(winnerBoards, board);
-        drawBoards = reduceBoard(drawBoards, board);
-    }
-
-    public List<char[][]> reduceBoard(List<char[][]> boardType, char[][] board){
-        List<char[][]> copy = new ArrayList<>();
-        for (char[][] innerBoard : boardType) {
-            boolean isSame = true;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if(innerBoard[i][j] != board[i][j] && board[i][j] != ' '){
-                        isSame = false;
-                        break;
+                if (board[i][j] == ' ') {
+                    board[i][j] = getCurrentPlayer();
+                    int score = minimax(board, 0, false);
+                    board[i][j] = ' ';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move[0] = i;
+                        move[1] = j;
                     }
                 }
-                if(!isSame) break;
             }
-            if(isSame)
-                copy.add(innerBoard);
         }
-        return copy;
+        return move;
     }
 
-    public void makeMove(char currentPlayer,char[][] board){
-        if(winnerBoards.isEmpty())
-            findBestMove(currentPlayer, board, drawBoards.get(0));
-        else
-            findBestMove(currentPlayer, board, winnerBoards.get(0));
-    }
+    private int minimax(char[][] board, int depth, boolean isMaximizing) {
+        if (isWinner()) {
+            return isMaximizing ? -10 + depth : 10 - depth;
+        }
 
-    public void findBestMove(char currentPlayer, char[][] board, char[][] bestBoard) {
+        if (isFull()) {
+            return 0;
+        }
+
+        int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        char opponent = getCurrentPlayer() == 'o' ? 'x' : 'o';
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (currentPlayer == bestBoard[i][j] && board[i][j] == ' ') {
-                    board[i][j] = currentPlayer;
-                    System.out.println((i + 1) + " " + (j + 1));
-                    displayBoardState(board);
-                    return;
+                if (board[i][j] == ' ') {
+                    board[i][j] = isMaximizing ? getCurrentPlayer() : opponent;
+                    int score = minimax(board, depth + 1, !isMaximizing);
+                    board[i][j] = ' ';
+
+                    if (isMaximizing) {
+                        bestScore = Math.max(score, bestScore);
+                    } else {
+                        bestScore = Math.min(score, bestScore);
+                    }
                 }
             }
         }
-    }
-
-    public void displayBoardState(char[][] boardState) {
-        for (int i = 0; i < 3; i++) {
-            System.out.println(boardState[i][0] + " | " + boardState[i][1] + " | " + boardState[i][2]);
-            if (i < 2) {
-                System.out.println("---------");
-            }
-        }
-
-        System.out.println();
+        return bestScore;
     }
 }

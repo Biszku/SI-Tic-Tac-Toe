@@ -3,18 +3,28 @@ import java.util.Scanner;
 
 public class Board {
     private char[][] boardState;
+    private char currentPlayer;
 
-    public Board() {
+    public Board(char currentPlayer) {
+        this.currentPlayer = currentPlayer;
         boardState = new char[3][3];
-        makeBoardEmpty(boardState);
+        makeBoardEmpty();
     }
 
     public char[][] getBoardState() {
         return boardState;
     }
 
-    public void makeMove(int row, int col, char player,char[][] board) {
-        board[row][col] = player;
+    public char getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(char currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public void makeMove(int row, int col) {
+        boardState[row][col] = currentPlayer;
         printBoard();
     }
 
@@ -29,7 +39,7 @@ public class Board {
         System.out.println();
     }
 
-    public void enterMove(char player,char[][] board) {
+    public void enterMove() {
         Scanner scanner = new Scanner(System.in);
         int row;
         int col;
@@ -38,20 +48,20 @@ public class Board {
                 String[] input = scanner.nextLine().trim().split(" ");
                 row = Integer.parseInt(input[0]) - 1;
                 col = Integer.parseInt(input[1]) - 1;
-                if(board[row][col] != ' ') printBoard();
-            } while (board[row][col] != ' ');
+                if(boardState[row][col] != ' ') printBoard();
+            } while (boardState[row][col] != ' ');
         } catch (Exception e) {
             printBoard();
-            enterMove(player,board);
+            enterMove();
             return;
         }
-        makeMove(row, col, player, board);
+        makeMove(row, col);
     }
 
-    public boolean isFull(char[][] board) {
-        for (char[] row : board) {
-            for (char c : row) {
-                if (c == ' ') {
+    public boolean isFull() {
+        for (char[] row : boardState) {
+            for (char field : row) {
+                if (field == ' ') {
                     return false;
                 }
             }
@@ -59,30 +69,39 @@ public class Board {
         return true;
     }
 
-    public boolean isWinner(char player, char[][] board) {
-        char[] win = new char[] {player, player, player};
+    public boolean isWinner() {
+        return (checkRows() || checkColumns() || checkDiagonals());
+    }
 
-        // horizontal checking
-        for(char[] tab : board) {
-            if(Arrays.equals(tab,win)) return true;
+    private boolean checkRows() {
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(boardState[i][0], boardState[i][1], boardState[i][2])) {
+                return true;
+            }
         }
-
-        // vertical checking
-        for(int i = 0; i < board.length; i++) {
-            char[] newArr = new char[] {board[0][i],board[1][i],board[2][i]};
-            if(Arrays.equals(newArr,win)) return true;
-        }
-
-        // diagonal checking
-        char[] cross1 = new char[] {board[0][0],board[1][1],board[2][2]};
-        char[] cross2 = new char[] {board[0][2],board[1][1],board[2][0]};
-        if(Arrays.equals(cross1,win) || Arrays.equals(cross2,win)) return true;
-
         return false;
     }
 
-    private void makeBoardEmpty(char[][] board) {
-        for(char[] row : board) {
+    private boolean checkColumns() {
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(boardState[0][i], boardState[1][i], boardState[2][i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDiagonals() {
+        return ((checkRowCol(boardState[0][0], boardState[1][1], boardState[2][2])) ||
+                (checkRowCol(boardState[0][2], boardState[1][1], boardState[2][0])));
+    }
+
+    private boolean checkRowCol(char c1, char c2, char c3) {
+        return ((c1 != ' ') && (c1 == c2) && (c2 == c3));
+    }
+
+    private void makeBoardEmpty() {
+        for(char[] row : boardState) {
             Arrays.fill(row, ' ');
         }
     }

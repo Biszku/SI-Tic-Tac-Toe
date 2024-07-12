@@ -3,60 +3,41 @@ import java.util.Random;
 public class Game {
     private final char realPlayer;
     private final char siPlayer;
-    private char currentPlayer;
-    private Board boardState;
-    private SiController siController;
+    private final SiController siController;
 
     public Game() {
-        currentPlayer = 'x';
-        Random random = new Random();
+        realPlayer = 'o';
+        siPlayer = 'x';
 
-        realPlayer = random.nextInt(1,3) == 1 ? currentPlayer : 'o';
-        siPlayer = realPlayer == currentPlayer ? 'o' : currentPlayer;
-
-        boardState = new Board();
-
-        siController = new SiController(siPlayer);
+        siController = new SiController('x');
     }
 
     public void start() {
-
-        boardState.printBoard();
+        siController.printBoard();
         while (true) {
-//            System.out.println(Arrays.deepToString(siController.getWinnerBoards().toArray()));
-            System.out.println(siController.getWinnerBoards().size());
-            System.out.println(siController.getDrawBoards().size());
+            char currentPlayer = siController.getCurrentPlayer();
             if(currentPlayer == realPlayer){
-
-                boardState.enterMove(currentPlayer, getBoard());
+                siController.enterMove();
             }
             else {
-                siController.makeMove(currentPlayer,getBoard());
+                int[] move = siController.bestMove();
+                siController.makeMove(move[0], move[1]);
             }
-
-            boolean winner = isWinner();
+            boolean winner = siController.isWinner();
             if (winner) {
                 System.out.println("Player " + currentPlayer + " won");
                 return;
             }
-            if (boardState.isFull(getBoard())) {
+            if (siController.isFull()) {
                 System.out.println("This is draw");
                 return;
             }
-            siController.reduceBoards(getBoard());
             changePlayer();
         }
     }
 
     public void changePlayer() {
-        currentPlayer = currentPlayer == 'x' ? 'o' : 'x';
-    }
-
-    private boolean isWinner() {
-        return boardState.isWinner(currentPlayer, boardState.getBoardState());
-    }
-
-    private char[][] getBoard() {
-        return boardState.getBoardState();
+        char currentPlayer = siController.getCurrentPlayer() == 'x' ? 'o' : 'x';
+        siController.setCurrentPlayer(currentPlayer);
     }
 }
