@@ -6,8 +6,10 @@ public class Game {
     private final SiController siController;
 
     public Game() {
-        realPlayer = 'o';
-        siPlayer = 'x';
+        Random random = new Random();
+
+        realPlayer = random.nextInt(2) == 0 ? 'x' : 'o';
+        siPlayer = realPlayer == 'x' ? 'o' : 'x';
 
         siController = new SiController('x');
     }
