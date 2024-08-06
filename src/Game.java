@@ -2,15 +2,12 @@ import java.util.Random;
 
 public class Game {
     private final char realPlayer;
-    private final char siPlayer;
     private final SiController siController;
 
     public Game() {
         Random random = new Random();
 
         realPlayer = random.nextInt(2) == 0 ? 'x' : 'o';
-        siPlayer = realPlayer == 'x' ? 'o' : 'x';
-
         siController = new SiController('x');
     }
 
