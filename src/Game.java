@@ -1,42 +1,38 @@
 import java.util.Random;
 
 public class Game {
-    private final char realPlayer;
+    private Players currentPlayer = Players.getInitialPlayer();
+    private final Players realPlayer;
+    private final Players siPlayer;
     private final SiController siController;
 
     public Game() {
         Random random = new Random();
 
-        realPlayer = random.nextInt(2) == 0 ? 'x' : 'o';
-        siController = new SiController('x');
+        realPlayer = Players.getRandomPlayer();
+        siPlayer = realPlayer.getOppositePlayer();
+
+        siController = new SiController();
     }
 
     public void start() {
         siController.printBoard();
         while (true) {
-            char currentPlayer = siController.getCurrentPlayer();
-            if(currentPlayer == realPlayer){
-                siController.enterMove();
-            }
+            if(currentPlayer == realPlayer) siController.enterMove(currentPlayer);
             else {
-                int[] move = siController.bestMove();
-                siController.makeMove(move[0], move[1]);
+                int[] move = siController.bestMove(currentPlayer);
+                siController.makeMove(move[0], move[1], currentPlayer);
             }
             boolean winner = siController.isWinner();
             if (winner) {
                 System.out.println("Player " + currentPlayer + " won");
-                return;
+                break;
             }
             if (siController.isFull()) {
                 System.out.println("This is draw");
-                return;
+                break;
             }
-            changePlayer();
+            currentPlayer = currentPlayer.changePlayer();
         }
-    }
-
-    public void changePlayer() {
-        char currentPlayer = siController.getCurrentPlayer() == 'x' ? 'o' : 'x';
-        siController.setCurrentPlayer(currentPlayer);
     }
 }

@@ -3,10 +3,8 @@ import java.util.Scanner;
 
 public class Board {
     private char[][] boardState;
-    private char currentPlayer;
 
-    public Board(char currentPlayer) {
-        this.currentPlayer = currentPlayer;
+    public Board() {
         boardState = new char[3][3];
         makeBoardEmpty();
     }
@@ -15,16 +13,8 @@ public class Board {
         return boardState;
     }
 
-    public char getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(char currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public void makeMove(int row, int col) {
-        boardState[row][col] = currentPlayer;
+    public void makeMove(int row, int col, Players currentPlayer) {
+        boardState[row][col] = currentPlayer.getPlayer();
         printBoard();
     }
 
@@ -39,7 +29,7 @@ public class Board {
         System.out.println();
     }
 
-    public void enterMove() {
+    public void enterMove(Players currentPlayer) {
         Scanner scanner = new Scanner(System.in);
         int row;
         int col;
@@ -52,10 +42,10 @@ public class Board {
             } while (boardState[row][col] != ' ');
         } catch (Exception e) {
             printBoard();
-            enterMove();
+            enterMove(currentPlayer);
             return;
         }
-        makeMove(row, col);
+        makeMove(row, col, currentPlayer);
     }
 
     public boolean isFull() {
