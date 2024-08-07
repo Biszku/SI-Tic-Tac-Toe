@@ -1,3 +1,5 @@
+package gameController;
+
 public class SiController extends Board {
 
     public SiController() {
